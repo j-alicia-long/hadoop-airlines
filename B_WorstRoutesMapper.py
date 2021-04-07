@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 """
-Task A: Avg On Time Arrival - Mapper
+Task B: Worst routes of 3 worst airlines - Mapper
 
 To run via Hadoop:
-hadoop jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -file A_OnTimeMapper.py -mapper A_OnTimeMapper.py -file A_OnTimeReducer.py -reducer A_OnTimeReducer.py -input JAN2021.csv -output a_out
-cat a_out/part-00000 | more | sort -nk2
+hadoop jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -file B_WorstRoutesMapper.py -mapper B_WorstRoutesMapper.py -file B_WorstRoutesReducer.py -reducer B_WorstRoutesReducer.py -input subset_JAN2021.csv -output b_out
+cat b_out/part-00000 | sort -k1,1 -k4,4n | more
 
 To run via cat (check only):
-cat JAN2021.csv | ./A_OnTimeMapper.py | sort -k1,1 | ./A_OnTimeReducer.py | sort -nk2
+cat JAN2021.csv | ./B_WorstRoutesMapper.py | sort -k1,3 | ./B_WorstRoutesReducer.py | sort -k1,1 -k4,4n
 """
-
 
 import sys
 import csv
+
+# Results from task A
+WORST_AIRLINES = {"MQ", "G4", "B6"}
 
 # input comes from STDIN (standard input)
 # for line in sys.stdin:
@@ -30,9 +32,13 @@ for row in csv.reader(iter(sys.stdin.readline, ''), delimiter=',', quotechar='"'
     if not ARR_DELAY_NEW:
         ARR_DELAY_NEW = "0"
 
+    # Print routes for worst airlines only
+    if OP_UNIQUE_CARRIER not in WORST_AIRLINES:
+        continue
+
     # write the results to STDOUT (standard output);
     # what we output here will be the input for the
     # Reduce step, i.e. the input for reducer.py
     #
     # tab-delimited
-    print("{0}\t{1}".format(OP_UNIQUE_CARRIER, ARR_DELAY_NEW))
+    print("{0}\t{1}\t{2}\t{3}".format(OP_UNIQUE_CARRIER, ORIGIN, DEST, ARR_DELAY_NEW))

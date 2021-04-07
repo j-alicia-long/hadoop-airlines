@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Task A: Avg On Time Arrival - Reducer
 
@@ -8,8 +9,6 @@ cat a_out/part-00000 | more | sort -nk2
 To run via cat (check only):
 cat JAN2021.csv | ./A_OnTimeMapper.py | sort -k1,1 | ./A_OnTimeReducer.py | sort -nk2
 """
-
-#!/usr/bin/env python3
 
 from operator import itemgetter
 import sys
@@ -42,7 +41,8 @@ for line in sys.stdin:
     else: # Different airline, so restart running count
         if curr_airline:
             # write average delay for current airline to STDOUT
-            print("{0}\t{1}".format(curr_airline, curr_delay_total/curr_airline_count))
+            avg_airline_delay = curr_delay_total/curr_airline_count
+            print("{0}\t{1}".format(curr_airline, avg_airline_delay))
         curr_delay_total = delay
         curr_airline_count = 1
         curr_airline = airline
