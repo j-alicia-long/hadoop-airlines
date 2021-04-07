@@ -1,3 +1,14 @@
+"""
+Task A: Avg On Time Arrival - Reducer
+
+To run via Hadoop:
+hadoop jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -file A_OnTimeMapper.py -mapper A_OnTimeMapper.py -file A_OnTimeReducer.py -reducer A_OnTimeReducer.py -input JAN2021.csv -output a_out
+cat a_out/part-00000 | more | sort -nk2
+
+To run via cat (check only):
+cat JAN2021.csv | ./A_OnTimeMapper.py | sort -k1,1 | ./A_OnTimeReducer.py | sort -nk2
+"""
+
 #!/usr/bin/env python3
 
 from operator import itemgetter
