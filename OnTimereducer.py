@@ -3,7 +3,7 @@
 from operator import itemgetter
 import sys
 
-curr_airline = "None"
+curr_airline = None
 curr_delay_total = 0
 
 # input comes from STDIN
@@ -13,11 +13,10 @@ for line in sys.stdin:
 
     # parse the input we got from mapper.py
     airline, delay = line.split('\t', 1)
-    print(airline, delay)
 
     # convert delay (currently a string) to int
     try:
-        delay = int(delay)
+        delay = float(delay)
     except ValueError:
         # count was not a number, so silently
         # ignore/discard this line
@@ -28,7 +27,6 @@ for line in sys.stdin:
     if curr_airline == airline:
         curr_delay_total += delay
     else: # Different airline, so restart running count
-        print(curr_airline)
         if curr_airline:
             # write result to STDOUT
             print("{0}\t{1}".format(curr_airline, curr_delay_total))
