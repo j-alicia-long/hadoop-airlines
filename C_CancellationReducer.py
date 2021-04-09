@@ -13,55 +13,37 @@ cat JAN2021.csv | ./B_WorstRoutesMapper.py | sort -k1,3 | ./B_WorstRoutesReducer
 from operator import itemgetter
 import sys
 
-curr_airline = None
-# Reset for each airline
-route_dict = {} # Format: key=[origin]-[dest], value=(sum, count)
-
-def print_routes(route_dict):
-    for route, delay_tuple in route_dict.items():
-        o, d = route.split('-')
-        delay_sum, route_count = delay_tuple
-        avg_route_delay = delay_sum/route_count
-        # write average delay for current route to STDOUT
-        print("{0}\t{1}\t{2}\t{3}".format(curr_airline, o, d, avg_route_delay))
-
+current_code = None
+current_count = 0
+code = None
 
 # input comes from STDIN
-# NOTE: 4 columns, assume it's sorted only by col 1
 for line in sys.stdin:
     # remove leading and trailing whitespace
     line = line.strip()
 
     # parse the input we got from mapper.py
-    airline, origin, dest, delay = line.split('\t', 3)
-    route = "-".join([origin, dest])
+    code, count = line.split('\t', 1)
 
-    # convert delay (currently a string) to float
+    # convert count (currently a string) to int
     try:
-        delay = float(delay)
+        count = int(count)
     except ValueError:
         # count was not a number, so silently
         # ignore/discard this line
         continue
 
     # this IF-switch only works because Hadoop sorts map output
-    # by key (here: word) before it is passed to the reducer
-    if curr_airline != airline: # Different route, so restart running count
-        if route_dict: # Print contents if full
-            print_routes(route_dict)
-        # Reset airline route tracking
-        curr_airline = airline
-        route_dict = {}
-        route_dict[route] = (delay, 1)
-
+    # by key (here: code) before it is passed to the reducer
+    if current_code == code:
+        current_count += count
     else:
-        if route in route_dict:
-            delay_sum, route_count = route_dict[route]
-            route_dict[route] = (delay_sum+delay, route_count+1)
-        else:
-            route_dict[route] = (delay, 1)
+        if current_code:
+            # write result to STDOUT
+            print("{0}\t{1}".format(current_code, current_count))
+        current_count = count
+        current_code = code
 
-
-# do not forget to output the last airline if needed!
-if curr_airline == airline:
-    print_routes(route_dict)
+# do not forget to output the last code if needed!
+if current_code == code:
+    print("{0}\t{1}".format(current_code, current_count))

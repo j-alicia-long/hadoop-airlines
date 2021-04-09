@@ -13,8 +13,6 @@ cat JAN2021.csv | ./B_WorstRoutesMapper.py | sort -k1,3 | ./B_WorstRoutesReducer
 import sys
 import csv
 
-# Results from task A
-WORST_AIRLINES = {"MQ", "G4", "B6"}
 
 # input comes from STDIN (standard input)
 # for line in sys.stdin:
@@ -28,17 +26,6 @@ for row in csv.reader(iter(sys.stdin.readline, ''), delimiter=',', quotechar='"'
      CARRIER_DELAY, WEATHER_DELAY, NAS_DELAY, SECURITY_DELAY,
      LATE_AIRCRAFT_DELAY, empty) = row
 
-    # Add placeholder value for empty columns
-    if not ARR_DELAY_NEW:
-        ARR_DELAY_NEW = "0"
-
-    # Print routes for worst airlines only
-    if OP_UNIQUE_CARRIER not in WORST_AIRLINES:
-        continue
-
-    # write the results to STDOUT (standard output);
-    # what we output here will be the input for the
-    # Reduce step, i.e. the input for reducer.py
-    #
-    # tab-delimited
-    print("{0}\t{1}\t{2}\t{3}".format(OP_UNIQUE_CARRIER, ORIGIN, DEST, ARR_DELAY_NEW))
+     # Print cancellation codes for cancelled flights only
+    if float(CANCELLED) == 1:
+        print("{0}\t1".format(CANCELLATION_CODE))

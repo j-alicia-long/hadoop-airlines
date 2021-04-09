@@ -63,5 +63,5 @@ for line in sys.stdin:
 
 
 # do not forget to output the last airline if needed!
-if curr_airline == airline:
+if curr_airline:
     print_routes(route_dict)
