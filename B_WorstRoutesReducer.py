@@ -3,8 +3,17 @@
 Task B: Worst routes of 3 worst airlines - Reducer
 
 To run via Hadoop:
-hadoop jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -file B_WorstRoutesMapper.py -mapper B_WorstRoutesMapper.py -file B_WorstRoutesReducer.py -reducer B_WorstRoutesReducer.py -input subset_JAN2021.csv -output b_out
+hadoop jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar \
+    -file B_WorstRoutesMapper.py \
+    -mapper B_WorstRoutesMapper.py \
+    -file B_WorstRoutesReducer.py \
+    -reducer B_WorstRoutesReducer.py \
+    -input JAN2021.csv \
+    -output b_out
 cat b_out/part-00000 | sort -k1,1 -k4,4n | more
+cat b_out/part-00000 | grep MQ | sort -k4n | tail -n 15
+cat b_out2/part-00000 | grep G4 | sort -k4n | tail -n 15
+cat b_out2/part-00000 | grep B6 | sort -k4n | tail -n 15
 
 To run via cat (check only):
 cat JAN2021.csv | ./B_WorstRoutesMapper.py | sort -k1,3 | ./B_WorstRoutesReducer.py | sort -k1,1 -k4,4n

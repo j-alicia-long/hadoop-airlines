@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
 """
-Task B: Worst routes of 3 worst airlines - Mapper
+Task C: Cancellation Reasons - Mapper
 
 To run via Hadoop:
-hadoop jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar -file B_WorstRoutesMapper.py -mapper B_WorstRoutesMapper.py -file B_WorstRoutesReducer.py -reducer B_WorstRoutesReducer.py -input subset_JAN2021.csv -output b_out
-cat b_out/part-00000 | sort -k1,1 -k4,4n | more
+hadoop jar /usr/local/hadoop/share/hadoop/tools/lib/hadoop-streaming-3.2.1.jar \
+    -file C_CancellationMapper.py \
+    -mapper C_CancellationMapper.py \
+    -file C_CancellationReducer.py \
+    -reducer C_CancellationReducer.py \
+    -input JAN2021.csv \
+    -output c_out
+cat c_out/part-00000 | more
 
 To run via cat (check only):
-cat JAN2021.csv | ./B_WorstRoutesMapper.py | sort -k1,3 | ./B_WorstRoutesReducer.py | sort -k1,1 -k4,4n
+cat JAN2021.csv | ./C_CancellationMapper.py | sort -k1 | ./C_CancellationReducer.py
 """
 
 import sys
